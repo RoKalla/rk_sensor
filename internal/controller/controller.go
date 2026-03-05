@@ -1,7 +1,7 @@
 package controller
 
 import (
-	d "sensor/internal/domain"
+	d "rk_sensor/internal/domain"
 	"time"
 )
 

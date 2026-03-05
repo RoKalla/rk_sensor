@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	d "sensor/internal/domain"
+	d "rk_sensor/internal/domain"
 )
 
 type Payload struct {
