@@ -39,7 +39,7 @@ func (s *TempratureSensor) Type() string {
 	return s.sensorType
 }
 
-func (s *TempratureSensor) TimeStamp() int64 {
+func (s *TempratureSensor) Timestamp() int64 {
 	return s.timeStamp
 }
 
