@@ -1,0 +1,3 @@
+package sensor
+
+func NewFactory()
