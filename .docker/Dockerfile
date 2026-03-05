@@ -9,7 +9,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o main ./cmd/sensor
 
-FROM gcr.io/distroless/static-debian13
+FROM gcr.io/distroless/static-debian13:non-root
 
 COPY --from=builder /src/main .
 
