@@ -40,7 +40,7 @@ func NewClient(config *Config) *Client {
 
 func (c *Client) Send(sensor domain.Sensor) error {
 	contentType := "application/json"
-	payload := Payload{
+	payload := &Payload{
 		id:         sensor.Id(),
 		sensorType: sensor.Type(),
 		timeStamp:  sensor.Timestamp(),

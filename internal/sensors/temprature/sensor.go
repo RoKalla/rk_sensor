@@ -25,7 +25,7 @@ type TempratureSensor struct {
 	value      float32
 	stop       chan struct{}
 	lock       sync.RWMutex
-	sender     domain.Sender
+	Sender     domain.Sender
 }
 
 func New(sender domain.Sender) *TempratureSensor {
@@ -36,6 +36,8 @@ func New(sender domain.Sender) *TempratureSensor {
 		value:      randomizeNumber(),
 		unit:       "C",
 		stop:       make(chan struct{}),
+		lock:       sync.RWMutex{},
+		Sender:     sender,
 	}
 }
 
@@ -71,8 +73,8 @@ func (s *TempratureSensor) Start() error {
 			case <-time.After(1 * time.Second):
 				s.lock.Lock()
 				s.value = randomizeNumber()
-				fmt.Println(s.value)
 				s.lock.Unlock()
+				s.Sender.Send(s)
 			}
 		}
 	}()
