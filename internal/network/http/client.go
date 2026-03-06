@@ -21,8 +21,8 @@ type Config struct {
 }
 
 type Client struct {
-	httpClient http.Client
-	httpConfig Config
+	httpClient *http.Client
+	httpConfig *Config
 }
 
 func NewConfig(url string) *Config {
@@ -33,19 +33,19 @@ func NewConfig(url string) *Config {
 
 func NewClient(config *Config) *Client {
 	return &Client{
-		httpClient: http.Client{},
-		httpConfig: *config,
+		httpClient: &http.Client{},
+		httpConfig: config,
 	}
 }
 
-func (c *Client) Send(data s.Sensor) error {
+func (c *Client) Send(sensor s.Sensor) error {
 	contentType := "application/json"
 	payload := Payload{
-		id:         data.Id(),
-		sensorType: data.Type(),
-		timeStamp:  data.Timestamp(),
-		unit:       data.Unit(),
-		value:      data.Value(),
+		id:         sensor.Id(),
+		sensorType: sensor.Type(),
+		timeStamp:  sensor.Timestamp(),
+		unit:       sensor.Unit(),
+		value:      sensor.Value(),
 	}
 	json, err := json.Marshal(payload)
 	if err != nil {

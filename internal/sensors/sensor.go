@@ -6,4 +6,6 @@ type Sensor interface {
 	Timestamp() int64
 	Value() float32
 	Unit() string
+	Start()
+	Stop()
 }

@@ -1,7 +1,9 @@
 package temprature
 
 import (
+	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/segmentio/ksuid"
@@ -16,18 +18,21 @@ func randomizeNumber() float32 {
 type TempratureSensor struct {
 	id         string
 	sensorType string
-	timeStamp  int64
+	timestamp  int64
 	unit       string
 	value      float32
+	stop       chan struct{}
+	lock       sync.RWMutex
 }
 
 func New() *TempratureSensor {
 	return &TempratureSensor{
 		id:         ksuid.New().String(),
 		sensorType: "Temprature",
-		timeStamp:  time.Now().UTC().Unix(),
+		timestamp:  time.Now().UTC().Unix(),
 		value:      randomizeNumber(),
 		unit:       "C",
+		stop:       make(chan struct{}),
 	}
 }
 
@@ -40,7 +45,7 @@ func (s *TempratureSensor) Type() string {
 }
 
 func (s *TempratureSensor) Timestamp() int64 {
-	return s.timeStamp
+	return s.timestamp
 }
 
 func (s *TempratureSensor) Value() float32 {
@@ -49,4 +54,27 @@ func (s *TempratureSensor) Value() float32 {
 
 func (s *TempratureSensor) Unit() string {
 	return s.unit
+}
+
+func (s *TempratureSensor) Start() {
+	go func() {
+		fmt.Printf("Sensor %s started\n", s.id)
+	forloop:
+		for {
+			select {
+			case <-s.stop:
+				fmt.Printf("Sensor %s stopped\n", s.id)
+				break forloop
+			case <-time.After(1 * time.Second):
+				s.lock.Lock()
+				s.value = randomizeNumber()
+				fmt.Println(s.value)
+				s.lock.Unlock()
+			}
+		}
+	}()
+}
+
+func (s *TempratureSensor) Stop() {
+	s.stop <- struct{}{}
 }

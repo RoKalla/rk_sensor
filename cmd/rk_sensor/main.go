@@ -3,7 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	h "rk_sensor/internal/network/http"
 	"rk_sensor/internal/sensors"
+	"rk_sensor/internal/service"
+	"syscall"
+	"time"
 )
 
 func main() {
@@ -15,17 +20,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(sensor.Timestamp())
+	httpConfig := h.NewConfig("http://127.0.0.1")
+	sender := h.NewClient(httpConfig)
+	service := service.New(sensor, sender)
+	service.Start()
 
-	// sensor := s.New()
-	// httpConfig := h.NewConfig("http://127.0.0.1")
-	// sender := h.NewClient(httpConfig)
-	// controller := c.New(sensor, sender)
-	// controller.Start()
+	time.Sleep(5 * time.Second)
 
-	// signals := make(chan os.Signal, 1)
-	// signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+	service.Stop()
 
-	// <-signals
-	// controller.Stop()
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
+	<-signals
 }
