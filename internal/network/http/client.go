@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	s "rk_sensor/internal/sensors"
+	"rk_sensor/internal/domain"
 )
 
 type Payload struct {
@@ -38,7 +38,7 @@ func NewClient(config *Config) *Client {
 	}
 }
 
-func (c *Client) Send(sensor s.Sensor) error {
+func (c *Client) Send(sensor domain.Sensor) error {
 	contentType := "application/json"
 	payload := Payload{
 		id:         sensor.Id(),

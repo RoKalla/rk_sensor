@@ -1,4 +1,8 @@
-package sensors
+package domain
+
+type Sender interface {
+	Send(sensor Sensor) error
+}
 
 type Sensor interface {
 	Id() string
@@ -6,6 +10,6 @@ type Sensor interface {
 	Timestamp() int64
 	Value() float32
 	Unit() string
-	Start()
-	Stop()
+	Start() error
+	Stop() error
 }
