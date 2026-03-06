@@ -5,16 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	d "rk_sensor/internal/domain"
+	s "rk_sensor/internal/sensors"
 )
 
 type Payload struct {
-	Data1 int `json:"data1"`
-	Data2 int `json:"data2"`
+	id         string  `json:"id"`
+	sensorType string  `json:"sensorType"`
+	timeStamp  int64   `json:"timestamp"`
+	unit       string  `json:"unit"`
+	value      float32 `json:"value"`
 }
 
 type Config struct {
-	url string // Target for post requests
+	url string
 }
 
 type Client struct {
@@ -35,10 +38,19 @@ func NewClient(config *Config) *Client {
 	}
 }
 
-func (c *Client) Send(data d.SensorData) error {
+func (c *Client) Send(data s.Sensor) error {
 	contentType := "application/json"
-	payload := Payload(data)
-	json, _ := json.Marshal(payload)
+	payload := Payload{
+		id:         data.Id(),
+		sensorType: data.Type(),
+		timeStamp:  data.Timestamp(),
+		unit:       data.Unit(),
+		value:      data.Value(),
+	}
+	json, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("Unable to parse payload")
+	}
 	reader := bytes.NewReader(json)
 	resp, err := c.httpClient.Post(c.httpConfig.url, contentType, reader)
 	if err != nil {

@@ -6,9 +6,11 @@ import (
 	"strings"
 )
 
-func GetSensor(name string) (Sensor, error) {
+// GetSensor return specified sensortype.
+// Return error if specified does not exists
+func GetSensor(sensorType string) (Sensor, error) {
 
-	value := strings.ToLower(name)
+	value := strings.ToLower(sensorType)
 	switch value {
 	case "temprature":
 		return temprature.New(), nil

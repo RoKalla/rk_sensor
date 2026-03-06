@@ -1,7 +1,7 @@
-package controller
+package sensors
 
 import (
-	d "rk_sensor/internal/domain"
+	s "rk_sensor/internal/sensors"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type Sensor interface {
 }
 
 type SensorController struct {
-	sensor  Sensor
+	sensor  s.Sensor
 	sender  Sender
 	running bool
 }
