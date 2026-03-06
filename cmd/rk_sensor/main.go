@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	sender, SendErr := network.GetSender("https", "http://localhost:8080/hello")
+	sender, SendErr := network.GetSender("http://localhost:8080/hello")
 	if SendErr != nil {
 		fmt.Println(SendErr)
 		os.Exit(1)
