@@ -22,19 +22,20 @@ type Config struct {
 
 type Client struct {
 	httpClient *http.Client
-	httpConfig *Config
+	target     string
+	// httpConfig *Config
 }
 
-func NewConfig(url string) *Config {
-	return &Config{
-		url: url,
-	}
-}
+// func NewConfig(url string) *Config {
+// 	return &Config{
+// 		url: url,
+// 	}
+// }
 
-func NewClient(config *Config) *Client {
+func NewClient(target string) *Client {
 	return &Client{
 		httpClient: &http.Client{},
-		httpConfig: config,
+		target:     target,
 	}
 }
 
@@ -52,7 +53,7 @@ func (c *Client) Send(sensor domain.Sensor) error {
 		return fmt.Errorf("Unable to parse payload")
 	}
 	reader := bytes.NewReader(json)
-	resp, err := c.httpClient.Post(c.httpConfig.url, contentType, reader)
+	resp, err := c.httpClient.Post(c.target, contentType, reader)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -4,21 +4,30 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	h "rk_sensor/internal/network/http"
+	"rk_sensor/internal/network"
+	"rk_sensor/internal/network/server"
 	"rk_sensor/internal/sensors"
 	"syscall"
+	"time"
 )
 
 func main() {
-	httpConfig := h.NewConfig("http://localhost:8080/hello")
 
-	sender := h.NewClient(httpConfig)
-
-	sensor, err := sensors.GetSensor("temprature", sender)
-	if err != nil {
-		fmt.Println(err)
+	sender, SendErr := network.GetSender("https", "http://localhost:8080/hello")
+	if SendErr != nil {
+		fmt.Println(SendErr)
 		os.Exit(1)
 	}
+
+	sensor, SensErr := sensors.GetSensor("temprature", sender)
+	if SensErr != nil {
+		fmt.Println(SensErr)
+		os.Exit(1)
+	}
+
+	go server.Start()
+
+	time.Sleep(time.Second)
 
 	fmt.Println("Server started!")
 	sensor.Start()
