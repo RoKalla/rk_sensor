@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	c "rk_sensor/internal/config"
 	"rk_sensor/internal/network"
 	_ "rk_sensor/internal/network/http/server"
 	sensorhandler "rk_sensor/internal/sensorHandler"
@@ -12,7 +13,12 @@ import (
 )
 
 func main() {
-	sender, SendErr := network.GetSender("http://localhost:8080/hello")
+	config, configErr := c.ReadEnv()
+	if configErr != nil {
+		fmt.Println(configErr)
+		os.Exit(1)
+	}
+	sender, SendErr := network.GetSender(config.Url)
 	if SendErr != nil {
 		fmt.Println(SendErr)
 		os.Exit(1)
