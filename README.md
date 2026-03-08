@@ -10,6 +10,8 @@ rk sensor is a simulated sensor that can data on diffrent protocols
 
 ## Run
 ```
+cp template.env .env
+<edit .env>
 go run cmd/rk_sensor/main.go
 ```
 or with docker  
