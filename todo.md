@@ -3,6 +3,10 @@
 ![image of diffrent sensors](./images/Types-Of-Sensors.png)
 
 ## Protocols to implement
-- HTTP ✅
+- HTTP(s) ✅
 - GRPC
 - ..more
+
+
+## Docker compose
+- add docker compose
