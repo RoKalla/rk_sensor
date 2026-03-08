@@ -24,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	sensor, SensErr := sensors.GetSensor("temprature")
+	sensor, SensErr := sensors.GetSensor(config.SensorType)
 	if SensErr != nil {
 		fmt.Println(SensErr)
 		os.Exit(1)
