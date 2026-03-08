@@ -1,24 +1,44 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
-	h "sensor/internal/clients/http"
-	c "sensor/internal/controller"
-	s "sensor/internal/sensor"
+	c "rk_sensor/internal/config"
+	"rk_sensor/internal/network"
+	_ "rk_sensor/internal/network/http/server"
+	sensorhandler "rk_sensor/internal/sensorHandler"
+	"rk_sensor/internal/sensors"
 	"syscall"
 )
 
 func main() {
-	sensor := s.New()
-	httpConfig := h.NewConfig("http://127.0.0.1")
-	sender := h.NewClient(httpConfig)
-	controller := c.New(sensor, sender)
-	controller.Start()
+	config, configErr := c.ReadEnv()
+	if configErr != nil {
+		fmt.Println(configErr)
+		os.Exit(1)
+	}
+	sender, SendErr := network.GetSender(config.Url)
+	if SendErr != nil {
+		fmt.Println(SendErr)
+		os.Exit(1)
+	}
+
+	sensor, SensErr := sensors.GetSensor(config.SensorType)
+	if SensErr != nil {
+		fmt.Println(SensErr)
+		os.Exit(1)
+	}
+
+	handler := sensorhandler.New(sender, sensor)
+
+	// go server.Start()
+	// fmt.Println("Server started!")
+
+	handler.Start()
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
 	<-signals
-	controller.Stop()
 }

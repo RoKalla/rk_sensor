@@ -1,0 +1,8 @@
+LICENSE
+READNE.md
+template.env
+todo.md
+version.txt
+.docker/
+images
+.gitignore
