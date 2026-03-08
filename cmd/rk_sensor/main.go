@@ -5,32 +5,31 @@ import (
 	"os"
 	"os/signal"
 	"rk_sensor/internal/network"
-	"rk_sensor/internal/network/server"
+	_ "rk_sensor/internal/network/http/server"
+	sensorhandler "rk_sensor/internal/sensorHandler"
 	"rk_sensor/internal/sensors"
 	"syscall"
-	"time"
 )
 
 func main() {
-
 	sender, SendErr := network.GetSender("http://localhost:8080/hello")
 	if SendErr != nil {
 		fmt.Println(SendErr)
 		os.Exit(1)
 	}
 
-	sensor, SensErr := sensors.GetSensor("temprature", sender)
+	sensor, SensErr := sensors.GetSensor("temprature")
 	if SensErr != nil {
 		fmt.Println(SensErr)
 		os.Exit(1)
 	}
 
-	go server.Start()
+	handler := sensorhandler.New(sender, sensor)
 
-	time.Sleep(time.Second)
+	// go server.Start()
+	// fmt.Println("Server started!")
 
-	fmt.Println("Server started!")
-	sensor.Start()
+	handler.Start()
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)

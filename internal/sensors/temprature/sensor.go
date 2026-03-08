@@ -6,8 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"rk_sensor/internal/domain"
-
 	"github.com/segmentio/ksuid"
 )
 
@@ -25,10 +23,9 @@ type TempratureSensor struct {
 	value      float32
 	stop       chan struct{}
 	lock       sync.RWMutex
-	Sender     domain.Sender
 }
 
-func New(sender domain.Sender) *TempratureSensor {
+func New() *TempratureSensor {
 	return &TempratureSensor{
 		id:         ksuid.New().String(),
 		sensorType: "Temprature",
@@ -37,7 +34,6 @@ func New(sender domain.Sender) *TempratureSensor {
 		unit:       "C",
 		stop:       make(chan struct{}),
 		lock:       sync.RWMutex{},
-		Sender:     sender,
 	}
 }
 
@@ -54,6 +50,8 @@ func (s *TempratureSensor) Timestamp() int64 {
 }
 
 func (s *TempratureSensor) Value() float32 {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 	return s.value
 }
 
@@ -70,11 +68,10 @@ func (s *TempratureSensor) Start() error {
 			case <-s.stop:
 				fmt.Printf("Sensor %s stopped\n", s.id)
 				break forloop
-			case <-time.After(1 * time.Second):
+			case <-time.After(5 * time.Second):
 				s.lock.Lock()
 				s.value = randomizeNumber()
 				s.lock.Unlock()
-				s.Sender.Send(s)
 			}
 		}
 	}()

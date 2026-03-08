@@ -9,12 +9,12 @@ import (
 
 // GetSensor return specified sensortype.
 // Return error if specified does not exists
-func GetSensor(sensorType string, sender domain.Sender) (domain.Sensor, error) {
+func GetSensor(sensorType string) (domain.Sensor, error) {
 
 	value := strings.ToLower(sensorType)
 	switch value {
 	case "temprature":
-		return temprature.New(sender), nil
+		return temprature.New(), nil
 	default:
 		return nil, fmt.Errorf("invalid sensor type '%s'", value)
 	}
