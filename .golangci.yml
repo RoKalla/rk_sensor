@@ -1,0 +1,36 @@
+# .golangci.yml
+run:
+  timeout: 5m
+  tests: true        # include test files
+
+linters:
+  enable:
+    - govet          # built-in vet
+    - staticcheck    # advanced bug detection
+    - errcheck       # check for unchecked errors
+    - gosimple       # code simplification
+    - ineffassign    # useless assignments
+    - typecheck      # type errors
+    - unused         # dead code
+    - prealloc       # suggest prealloc for slices/maps
+    - gocyclo        # detects complex functions (optional)
+    - gofmt          # ensures code is formatted
+    - revive         # configurable stylistic linter
+  #disable:
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15  # warn if function complexity > 15
+  revive:
+    severity: warning
+    ignore-generated-header: true
+    rules:
+      - name: var-naming
+        severity: warning
+      - name: import-shadowing
+        severity: error
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0   # no limit
+  max-same-issues: 0         # no limit
