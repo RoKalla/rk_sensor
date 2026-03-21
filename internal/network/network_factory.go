@@ -7,17 +7,30 @@ import (
 	"strings"
 )
 
-func GetSender(url string) (domain.Sender, error) {
+func GetPuller(pullerType string) (domain.Puller, error) {
+	switch pullerType {
+	case "":
+		return nil, nil
+	case "http", "https":
+		return http.NewServer(), nil
+	default:
+		return nil, fmt.Errorf("Puller Type not supported (server): %s", pullerType)
+	}
+}
 
+func GetSender(url string) (domain.Sender, error) {
+	return nil, nil
 	schema := strings.Split(url, "://")
 	if len(schema) < 2 {
-		return nil, fmt.Errorf("Schema missing from URL: %s", url)
+		return nil, fmt.Errorf("Schema missing from URL (client): %s", url)
 	}
-
+	fmt.Println(schema)
 	switch schema[0] {
+	case "":
+		return nil, nil
 	case "http", "https":
 		return http.NewClient(url), nil
 	default:
-		return nil, fmt.Errorf("Schema type not supported: %s", url)
+		return nil, fmt.Errorf("Schema type not supported (client): %s", url)
 	}
 }
