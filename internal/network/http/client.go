@@ -23,14 +23,7 @@ type Config struct {
 type Client struct {
 	httpClient *http.Client
 	target     string
-	// httpConfig *Config
 }
-
-// func NewConfig(url string) *Config {
-// 	return &Config{
-// 		url: url,
-// 	}
-// }
 
 func NewClient(target string) *Client {
 	return &Client{
