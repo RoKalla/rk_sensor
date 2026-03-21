@@ -11,6 +11,7 @@ import (
 	"syscall"
 )
 
+// main is the main entrypoint of the program.
 func main() {
 	config, configErr := c.ReadEnv()
 	if configErr != nil {
