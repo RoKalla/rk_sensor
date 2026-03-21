@@ -23,7 +23,7 @@ func (s *Server) StartServer(sensor domain.Sensor) {
 }
 
 func (s *Server) sensorFunc(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
+	defer req.Body.Close() //nolint:errcheck
 	payload := &Payload{
 		Id:         s.sensor.Id(),
 		SensorType: s.sensor.Type(),
