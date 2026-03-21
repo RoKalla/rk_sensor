@@ -3,7 +3,7 @@ package sensors
 import (
 	"fmt"
 	"rk_sensor/internal/domain"
-	"rk_sensor/internal/sensors/temprature"
+	"rk_sensor/internal/sensors/temperature"
 	"strings"
 )
 
@@ -13,8 +13,8 @@ func GetSensor(sensorType string) (domain.Sensor, error) {
 
 	value := strings.ToLower(sensorType)
 	switch value {
-	case "temprature":
-		return temprature.New(), nil
+	case "temperature":
+		return temperature.New(), nil
 	default:
 		return nil, fmt.Errorf("invalid sensor type '%s'", value)
 	}

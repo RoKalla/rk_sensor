@@ -1,4 +1,4 @@
-package temprature
+package temperature
 
 import (
 	"fmt"
@@ -11,11 +11,12 @@ import (
 
 var rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 
+// randomizeNumber return a (psudo) random number between 0 and 100
 func randomizeNumber() float32 {
 	return rng.Float32() * 100
 }
 
-type TempratureSensor struct {
+type TemperatureSensor struct {
 	id         string
 	sensorType string
 	timestamp  int64
@@ -25,10 +26,11 @@ type TempratureSensor struct {
 	lock       sync.RWMutex
 }
 
-func New() *TempratureSensor {
-	return &TempratureSensor{
+// Creates a new TemperatureSensor
+func New() *TemperatureSensor {
+	return &TemperatureSensor{
 		id:         ksuid.New().String(),
-		sensorType: "Temprature",
+		sensorType: "Temperature",
 		timestamp:  time.Now().UTC().Unix(),
 		value:      randomizeNumber(),
 		unit:       "C",
@@ -37,29 +39,35 @@ func New() *TempratureSensor {
 	}
 }
 
-func (s *TempratureSensor) Id() string {
+// Id return the id of the Temperature sensor
+func (s *TemperatureSensor) Id() string {
 	return s.id
 }
 
-func (s *TempratureSensor) Type() string {
+// Type return the Type of the Temperature sensor
+func (s *TemperatureSensor) Type() string {
 	return s.sensorType
 }
 
-func (s *TempratureSensor) Timestamp() int64 {
+// Timestamp return the Timestamp of the Temperature sensor
+func (s *TemperatureSensor) Timestamp() int64 {
 	return s.timestamp
 }
 
-func (s *TempratureSensor) Value() float32 {
+// Value return the Value of the Temperature sensor
+func (s *TemperatureSensor) Value() float32 {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return s.value
 }
 
-func (s *TempratureSensor) Unit() string {
+// Unit return the Unit of the Temperature sensor
+func (s *TemperatureSensor) Unit() string {
 	return s.unit
 }
 
-func (s *TempratureSensor) Start() error {
+// Start update the value of the Temperature sensor at intervals
+func (s *TemperatureSensor) Start() error {
 	go func() {
 		fmt.Printf("Sensor %s started\n", s.id)
 	forloop:
@@ -78,7 +86,8 @@ func (s *TempratureSensor) Start() error {
 	return nil
 }
 
-func (s *TempratureSensor) Stop() error {
+// Stop stops the update interval started by calling Start
+func (s *TemperatureSensor) Stop() error {
 	s.stop <- struct{}{}
 	return nil
 }

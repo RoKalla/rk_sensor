@@ -7,15 +7,17 @@ import (
 )
 
 type SensorHandler struct {
+	puller domain.Puller
 	sender domain.Sender
 	sensor domain.Sensor
 	stop   chan struct{}
 }
 
-func New(sender domain.Sender, sensor domain.Sensor) *SensorHandler {
+func New(sender domain.Sender, sensor domain.Sensor, puller domain.Puller) *SensorHandler {
 	return &SensorHandler{
 		sender: sender,
 		sensor: sensor,
+		puller: puller,
 		stop:   make(chan struct{}),
 	}
 }
@@ -25,7 +27,13 @@ func (sh *SensorHandler) Start() error {
 	if err := sh.sensor.Start(); err != nil {
 		return err
 	}
-	sh.startLoop()
+	if sh.sender != nil {
+		fmt.Println("Starting sender")
+		sh.startSender()
+	}
+	if sh.puller != nil {
+		sh.puller.StartServer(sh.sensor)
+	}
 	return nil
 }
 
@@ -40,7 +48,7 @@ func (sh *SensorHandler) Stop() error {
 	return nil
 }
 
-func (sh *SensorHandler) startLoop() {
+func (sh *SensorHandler) startSender() {
 	go func() {
 	forloop:
 		for {

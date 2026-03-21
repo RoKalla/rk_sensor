@@ -1,5 +1,9 @@
 package domain
 
+type Puller interface {
+	StartServer(sensor Sensor)
+}
+
 type Sender interface {
 	Send(sensor Sensor) error
 }
