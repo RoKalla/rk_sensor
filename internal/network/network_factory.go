@@ -19,15 +19,16 @@ func GetPuller(pullerType string) (domain.Puller, error) {
 }
 
 func GetSender(url string) (domain.Sender, error) {
-	return nil, nil
+
+	if url == "" {
+		return nil, nil
+	}
+
 	schema := strings.Split(url, "://")
 	if len(schema) < 2 {
 		return nil, fmt.Errorf("Schema missing from URL (client): %s", url)
 	}
-	fmt.Println(schema)
 	switch schema[0] {
-	case "":
-		return nil, nil
 	case "http", "https":
 		return http.NewClient(url), nil
 	default:

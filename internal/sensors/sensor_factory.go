@@ -13,8 +13,6 @@ func GetSensor(sensorType string) (domain.Sensor, error) {
 
 	value := strings.ToLower(sensorType)
 	switch value {
-	case "":
-		return nil, nil
 	case "temprature":
 		return temprature.New(), nil
 	default:

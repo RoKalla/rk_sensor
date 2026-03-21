@@ -15,9 +15,8 @@ func main() {
 	config, configErr := c.ReadEnv()
 	if configErr != nil {
 		fmt.Println(configErr)
-		// os.Exit(1)
 	}
-	sender, SendErr := network.GetSender("")
+	sender, SendErr := network.GetSender(config.Url)
 	if SendErr != nil {
 		fmt.Println(SendErr)
 		os.Exit(1)
